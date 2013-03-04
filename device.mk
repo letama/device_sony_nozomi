@@ -201,5 +201,5 @@ PRODUCT_COPY_FILES += \
 
 $(call inherit-product, frameworks/native/build/phone-xhdpi-1024-dalvik-heap.mk)
 
-$(call inherit-product, vendor/sony/lt26/lt26-vendor.mk)
+$(call inherit-product, vendor/sony/nozomi/nozomi-vendor.mk)
 
