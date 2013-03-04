@@ -57,6 +57,26 @@ enum {
 	MANUAL_SENSOR
 };
 
+
+static int read_int (const char *path) {
+  int fd;
+  char buffer[20];
+
+  fd = open(path, O_RDONLY);
+  if (fd < 0) {
+    return -1;
+  }
+
+  int cnt = read(fd, buffer, 20);
+  close(fd);
+
+  if(cnt > 0) {
+    return atoi(buffer);
+  }
+  return -1;
+}
+
+
 static int write_int (const char *path, int value) {
 	int fd;
 	static int already_warned = 0;
@@ -115,6 +135,7 @@ static int rgb_to_brightness (struct light_state_t const* state) {
 static int set_light_backlight (struct light_device_t *dev, struct light_state_t const *state) {
 	int brightness = rgb_to_brightness(state);
 	int als_mode;
+	size_t i;
 
 	switch (state->brightnessMode) {
 		case BRIGHTNESS_MODE_SENSOR:
@@ -133,6 +154,9 @@ static int set_light_backlight (struct light_device_t *dev, struct light_state_t
 	g_backlight = brightness;
 	write_int (ALS_FILE, als_mode);
 	write_int (LCD_BACKLIGHT_FILE, brightness);
+	for (i = 0; i < sizeof(BUTTON_BACKLIGHT_FILE)/sizeof(BUTTON_BACKLIGHT_FILE[0]); i++) {
+	  write_int (BUTTON_BACKLIGHT_FILE[i], brightness);
+	}
 	pthread_mutex_unlock(&g_lock);
 	return 0;
 }
@@ -155,9 +179,9 @@ static void set_shared_light_locked (struct light_device_t *dev, struct light_st
 	int r, g, b;
 	int delayOn,delayOff;
 
-	r = (state->color >> 16) & 0xFF;
-	g = (state->color >> 8) & 0xFF;
-	b = (state->color) & 0xFF;
+	r = ((state->color >> 16) & 0xFF) / 8;
+	g = ((state->color >> 8) & 0xFF) / 8;
+	b = ((state->color) & 0xFF) / 8;
 
         delayOn = state->flashOnMS;
 	delayOff = state->flashOffMS;
@@ -174,15 +198,30 @@ static void set_shared_light_locked (struct light_device_t *dev, struct light_st
 		write_int (RED_LED_FILE_DELAYOFF, delayOff);
 		write_int (GREEN_LED_FILE_DELAYOFF, delayOff);
 		write_int (BLUE_LED_FILE_DELAYOFF, delayOff);
+
+#ifdef CONFIG_BACKLIGHT_NOTIFICATION
+		write_int ("/sys/class/leds/button-backlight/brightness", 255);
+		write_string ("/sys/class/leds/button-backlight/trigger", "timer");
+		write_int("/sys/class/leds/button-backlight/delay_on", delayOn);
+		write_int("/sys/class/leds/button-backlight/delay_off", delayOff);
+#endif
 	} else {
 		write_string (RED_LED_FILE_TRIGGER, "none");
 		write_string (GREEN_LED_FILE_TRIGGER, "none");
 		write_string (BLUE_LED_FILE_TRIGGER, "none");
+
+#ifdef CONFIG_BACKLIGHT_NOTIFICATION
+		write_string ("/sys/class/leds/button-backlight/trigger", "none");
+		// When triggered off, re-link to backlight
+		int back = read_int(LCD_BACKLIGHT_FILE);
+		write_int ("/sys/class/leds/button-backlight/brightness", back);
+#endif
 	}
 
 	write_int (RED_LED_FILE, r);
 	write_int (GREEN_LED_FILE, g);
 	write_int (BLUE_LED_FILE, b);
+
 }
 
 static void handle_shared_battery_locked (struct light_device_t *dev) {
