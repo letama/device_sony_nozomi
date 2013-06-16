@@ -55,11 +55,13 @@ persist.cne.be.wlan.sqi.min=0
 persist.cne.be.wlan.sqi.max=100
 
 com.qc.hardware=true
-#debug.sf.hw=1
-#debug.enabletr=true
-#debug.composition.type=dyn
-#debug.mdpcomp.maxlayer=3
-#debug.mdpcomp.logs=0
+debug.sf.hw=1
+debug.composition.type=dyn
+dev.pm.dyn_samplingrate=1
+debug.mdpcomp.maxlayer=3
+debug.hwc.dynThreshold=1.9
+debug.mdpcomp.logs=0
+
 #ro.hwui.text_cache_width=2048
 ro.hdmi.enable=true
 
