@@ -17,7 +17,9 @@
  * limitations under the License.
  */
 
-#define LOG_TAG "lights.lt26"
+#define LOG_TAG "lights.semc"
+
+// #define CONFIG_BACKLIGHT_NOTIFICATION
 
 #include <cutils/log.h>
 #include <stdint.h>
@@ -179,9 +181,9 @@ static void set_shared_light_locked (struct light_device_t *dev, struct light_st
 	int r, g, b;
 	int delayOn,delayOff;
 
-	r = ((state->color >> 16) & 0xFF) / 8;
-	g = ((state->color >> 8) & 0xFF) / 8;
-	b = ((state->color) & 0xFF) / 8;
+	r = ((state->color >> 16) & 0xFF);
+	g = ((state->color >> 8) & 0xFF);
+	b = ((state->color) & 0xFF);
 
         delayOn = state->flashOnMS;
 	delayOff = state->flashOffMS;
@@ -200,10 +202,11 @@ static void set_shared_light_locked (struct light_device_t *dev, struct light_st
 		write_int (BLUE_LED_FILE_DELAYOFF, delayOff);
 
 #ifdef CONFIG_BACKLIGHT_NOTIFICATION
-		write_int ("/sys/class/leds/button-backlight/brightness", 255);
+		ALOGW("notification: delay_on=%d delay_off=%d", delayOn, delayOff);
 		write_string ("/sys/class/leds/button-backlight/trigger", "timer");
 		write_int("/sys/class/leds/button-backlight/delay_on", delayOn);
 		write_int("/sys/class/leds/button-backlight/delay_off", delayOff);
+		write_int ("/sys/class/leds/button-backlight/brightness", 255);
 #endif
 	} else {
 		write_string (RED_LED_FILE_TRIGGER, "none");
