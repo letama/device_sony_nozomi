@@ -99,10 +99,9 @@
         <!--
         Profiles for the back camera
         -->
-        <!--
         <EncoderProfile quality="1080p" fileFormat="mp4" duration="60">
             <Video codec="h264"
-                   bitRate="20000000"
+                   bitRate="17500000"
                    width="1920"
                    height="1080"
                    frameRate="30" />
@@ -111,7 +110,6 @@
                    sampleRate="48000"
                    channels="2" />
         </EncoderProfile>
-        -->
 
         <EncoderProfile quality="720p" fileFormat="mp4" duration="60">
             <Video codec="h264"
@@ -149,22 +147,18 @@
                    channels="1" />
         </EncoderProfile>
 
-        <!--
         <EncoderProfile quality="timelapse1080p" fileFormat="mp4" duration="60">
             <Video codec="h264"
-                   bitRate="20000000"
+                   bitRate="17500000"
                    width="1920"
                    height="1080"
                    frameRate="30" />
-        -->
             <!-- audio setting is ignored -->
-        <!--
             <Audio codec="aac"
                    bitRate="128000"
                    sampleRate="48000"
                    channels="2" />
         </EncoderProfile>
-        -->
 
         <EncoderProfile quality="timelapse720p" fileFormat="mp4" duration="60">
             <Video codec="h264"
@@ -331,6 +325,11 @@
     <AudioEncoderCap name="amrnb" enabled="true"
         minBitRate="5525" maxBitRate="12200"
         minSampleRate="8000" maxSampleRate="8000"
+        minChannels="1" maxChannels="1" />
+
+    <AudioEncoderCap name="amrwb" enabled="true"
+        minBitRate="6600" maxBitRate="23050"
+        minSampleRate="16000" maxSampleRate="16000"
         minChannels="1" maxChannels="1" />
 
     <AudioEncoderCap name="aac" enabled="true"
