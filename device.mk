@@ -14,17 +14,10 @@
 # limitations under the License.
 #
 
-ifeq ($(TARGET_PREBUILT_KERNEL),)
-  LOCAL_KERNEL := device/sony/nozomi/kernel
-else
-  LOCAL_KERNEL := $(TARGET_PREBUILT_KERNEL)
-endif
 
 PRODUCT_AAPT_CONFIG := normal hdpi xhdpi
 PRODUCT_AAPT_PREF_CONFIG := xhdpi
 
-PRODUCT_COPY_FILES += \
-    $(LOCAL_KERNEL):kernel
 
 PRODUCT_PACKAGES := \
     lights.semc \
@@ -72,6 +65,12 @@ endif
 PRODUCT_COPY_FILES += \
     $(NFCEE_ACCESS_PATH):system/etc/nfcee_access.xml
 
+# Busybox
+PRODUCT_PACKAGES += \
+	busybox \
+	static_busybox
+
+
 # Bluetooth
 PRODUCT_PACKAGES += \
 	libbt-vendor \
@@ -83,6 +82,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     Email \
     Stk
+
+# EAP SIM
+PRODUCT_PACKAGES += \
+    apdu
 
 PRODUCT_CHARACTERISTICS := nosdcard
 
@@ -106,11 +109,15 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.sensor.proximity.xml:system/etc/permissions/android.hardware.sensor.proximity.xml \
     frameworks/native/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml \
     frameworks/native/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
-    frameworks/native/data/etc/android.hardware.wifi.direct.xml:system/etc/permissions/android.hardware.wifi.direct.xml \
     frameworks/native/data/etc/com.nxp.mifare.xml:system/etc/permissions/com.nxp.mifare.xml \
     frameworks/native/data/etc/android.hardware.nfc.xml:system/etc/permissions/android.hardware.nfc.xml \
     frameworks/native/data/etc/com.android.nfc_extras.xml:system/etc/permissions/com.android.nfc_extras.xml \
     frameworks/native/data/etc/handheld_core_hardware.xml:system/etc/permissions/handheld_core_hardware.xml
+
+# Wifi direct is not working with sony binaries for now
+#    frameworks/native/data/etc/android.hardware.wifi.direct.xml:system/etc/permissions/android.hardware.wifi.direct.xml
+
+
 
 # This device is xhdpi.  However the platform doesn't
 # currently contain all of the bitmaps at xhdpi density so
@@ -172,10 +179,21 @@ PRODUCT_COPY_FILES += \
 # Wifi
 BOARD_WLAN_DEVICE_REV := bcm4330_b2
 WIFI_BAND             := 802_11_ABG
-$(call inherit-product-if-exists, hardware/broadcom/wlan/bcmdhd/firmware/bcm4330/device-bcm.mk)
+
+#
+# We now use sony firmwares
+# $(call inherit-product-if-exists, hardware/broadcom/wlan/bcmdhd/firmware/bcm4330/device-bcm.mk)
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/config/calibration:system/etc/wifi/calibration
+
+# Kernel
+
+PRODUCT_PACKAGE += \
+	sin
+
+$(call inherit-product, $(LOCAL_PATH)/broadcom/wlan/Android.mk)
+
 
 # Set default USB interface
 #PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
@@ -202,4 +220,4 @@ PRODUCT_COPY_FILES += \
 $(call inherit-product, frameworks/native/build/phone-xhdpi-1024-dalvik-heap.mk)
 
 $(call inherit-product, vendor/sony/nozomi/nozomi-vendor.mk)
-
+$(call inherit-product, kernel/AndroidKernel.mk)
