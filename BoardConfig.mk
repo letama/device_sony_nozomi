@@ -39,7 +39,7 @@ BOARD_EGL_CFG := device/sony/nozomi/config/egl.cfg
 
 TARGET_USES_ION := true
 TARGET_USES_OVERLAY := true
-TARGET_USES_SFBYBASS := true
+TARGET_USES_SF_BYPASS := true
 TARGET_USES_C2D_COMPOSITION := true
 
 # TARGET_USES_QCOM_MM_AUDIO := true
@@ -59,17 +59,20 @@ BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR ?= device/sony/nozomi/bluetooth
 
 # Wifi related defines
 BOARD_WPA_SUPPLICANT_DRIVER := NL80211
-WPA_SUPPLICANT_VERSION      := VER_0_8_X_CYANO
-#WPA_SUPPLICANT_VERSION      := VER_0_8_X
+#WPA_SUPPLICANT_VERSION      := VER_0_8_X_CYANO
+WPA_SUPPLICANT_VERSION      := VER_0_8_X
 BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_bcmdhd
 BOARD_HOSTAPD_DRIVER        := NL80211
 BOARD_HOSTAPD_PRIVATE_LIB   := lib_driver_cmd_bcmdhd
 BOARD_WLAN_DEVICE           := bcmdhd
-WIFI_DRIVER_FW_PATH_PARAM   := "/sys/module/bcmdhd/parameters/firmware_path"
-WIFI_DRIVER_FW_PATH_STA     := "/vendor/firmware/fw_bcmdhd.bin"
-WIFI_DRIVER_FW_PATH_AP      := "/vendor/firmware/fw_bcmdhd_apsta.bin"
-WIFI_DRIVER_FW_PATH_P2P     := "/vendor/firmware/fw_bcmdhd_p2p.bin"
-BOARD_LEGACY_NL80211_STA_EVENTS  := true
+WIFI_DRIVER_FW_PATH_PARAM   := "/sys/module/bcm4330/parameters/firmware_path"
+WIFI_DRIVER_FW_PATH_STA     := "/system/etc/firmware/fw_bcm4330b2.bin"
+WIFI_DRIVER_FW_PATH_AP      := "/system/etc/firmware/fw_bcm4330b2_apsta.bin"
+WIFI_DRIVER_FW_PATH_P2P     := "/system/etc/firmware/fw_bcm4330b2_p2p.bin"
+
+# disable for 3.4
+# BOARD_LEGACY_NL80211_STA_EVENTS  := true
+BOARD_WLAN_BROADCOM := true
 
 TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_NO_RECOVERY := true
@@ -78,7 +81,7 @@ BOARD_SYSTEMIMAGE_PARTITION_SIZE := 1056964608
 BOARD_USERDATAIMAGE_PARTITION_SIZE := 2147483648
 BOARD_FLASH_BLOCK_SIZE := 131072
 
-BOARD_CUSTOM_BOOTIMG_MK := device/sony/nozomi/custombootimg.mk
-
 # PL: check if def exists in AOSP
-BOARD_VOLD_MAX_PARTITIONS := 16
+BOARD_VOLD_MAX_PARTITIONS := 18
+
+KERNEL_DEFCONFIG := nozomi_defconfig
