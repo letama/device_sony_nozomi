@@ -61,6 +61,7 @@ dev.pm.dyn_samplingrate=1
 debug.mdpcomp.maxlayer=3
 debug.hwc.dynThreshold=1.9
 debug.mdpcomp.logs=0
+persist.hwc.mdpcomp.enable=1
 
 #ro.hwui.text_cache_width=2048
 ro.hdmi.enable=true
